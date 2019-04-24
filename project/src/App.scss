@@ -1,0 +1,31 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow: hidden;
+  font-family: Helvetica, san-serif;
+}
+
+.grid {
+  box-sizing: content-box;
+  padding: 0;
+  border-top: 1px solid rgb(0, 0, 0);
+  border-right: 1px solid rgb(0, 0, 0);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.grid-cell {
+  border-left: 1px solid rgb(0, 0, 0);
+  border-bottom: 1px solid rgb(0, 0, 0)
+}
+
+.snake-board {
+  position: relative;
+  margin: 10px auto;
+  &:focus {
+    outline: none;
+  }
+}
+
