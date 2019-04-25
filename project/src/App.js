@@ -1,49 +1,69 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.scss';
+
+var  snakeCell = {};
+snakeCell.x = 10;
+snakeCell.y = 20;
 
 // display a single cell
 function GridCell(props) {
+
+  let cellStyle = `grid-cell`;
+
+  if(props.gridx === snakeCell.x && props.gridy === snakeCell.y) 
+  {
+    cellStyle = `grid-snake`;
+  }
+
+  console.log(props.gridx + " " + props.gridy);
+
   return (
     <div
-      className={`grid-cell`}
+      className={cellStyle}
       style={{ height: props.size + "px", width: props.size + "px" }}
       />
   );
 }
 
 class App extends Component {
-  constructor(props) {
 
+  constructor(props) {
     super(props);
+
+    
+
     this.state = {
       snake: [],
       food: [],
-      // 0 = not started, 1 = in progress, 2= finished
       status: 0,
-      // using keycodes to indicate direction
       direction: 39
     };
 
   }
 
+  KeyDown(KeyEvent) {
+    // 37 left, 38 up, 39 right, 40
+    console.log("Key Pressed " + KeyEvent.keyCode) ;
+  }
+
   render() {
-    // each cell should be approximately 15px wide, so calculate how many we need
     this.numCells = Math.floor(this.props.size / 15);
     const cellSize = this.props.size / this.numCells;
     const cellIndexes = Array.from(Array(this.numCells).keys());
     const cells = cellIndexes.map(y => {
-      return cellIndexes.map(x => {
 
+      return cellIndexes.map(x => {
         return (
-          <GridCell size={cellSize} key={x + " " + y} />
+          <GridCell size={cellSize} gridx={x} gridy={y} />
         );
       });
+
     });
 
     return (
       <div
         className="snake-board"
+        onKeyDown={this.KeyDown}
         style={{
           width: this.props.size + "px",
           height: this.props.size + "px"

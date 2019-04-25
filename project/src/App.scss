@@ -16,9 +16,15 @@ html, body {
   flex-wrap: wrap;
 }
 
+.grid-snake {
+  border-left: 1px solid rgb(0, 0, 0);
+  border-bottom: 1px solid rgb(0, 0, 0);
+  background-color: green;
+}
+
 .grid-cell {
   border-left: 1px solid rgb(0, 0, 0);
-  border-bottom: 1px solid rgb(0, 0, 0)
+  border-bottom: 1px solid rgb(0, 0, 0);
 }
 
 .snake-board {
