@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import './App.scss';
 
-var  snakeCell = {};
+var snakePositions = {}; 
+
+var snakeCell = {};
 snakeCell.x = 10;
 snakeCell.y = 20;
+
 
 // display a single cell
 function GridCell(props) {
 
   let cellStyle = `grid-cell`;
 
-  if(props.gridx === snakeCell.x && props.gridy === snakeCell.y) 
+  if( snakePositions[ props.gridx + " " + props.gridy]) 
   {
     cellStyle = `grid-snake`;
   }
@@ -28,9 +31,8 @@ function GridCell(props) {
 class App extends Component {
 
   constructor(props) {
-    super(props);
 
-    
+    super(props);
 
     this.state = {
       snake: [],
@@ -41,12 +43,32 @@ class App extends Component {
 
   }
 
+  InitSnake() {
+    snakePositions[10 + " " + 20] = 1;
+    snakePositions[10 + " " + 21] = 1;
+    snakePositions[10 + " " + 22] = 1;
+  }
+
   KeyDown(KeyEvent) {
     // 37 left, 38 up, 39 right, 40
     console.log("Key Pressed " + KeyEvent.keyCode) ;
   }
 
+  updateSnake() {
+    //snakePositions.shift(); 
+    snakePositions.splice(-1);
+    //this.setState({ state: this.state });
+  }
+
+  StartGame() {
+    this.moveSnakeInterval = setInterval(this.updateSnake, 100);
+  }
+
   render() {
+
+    this.InitSnake();
+    this.StartGame();
+
     this.numCells = Math.floor(this.props.size / 15);
     const cellSize = this.props.size / this.numCells;
     const cellIndexes = Array.from(Array(this.numCells).keys());
