@@ -46,6 +46,10 @@ class App extends Component {
 
   }
 
+  posHash(pos) {
+    return pos.x + "," + pos.y
+  }
+
   InitSnake() {
 
     let pos1 = {};
@@ -60,9 +64,9 @@ class App extends Component {
     pos3.x = 10;
     pos3.y = 22;
 
-    snakeMaps[pos1.x + "," + pos1.y] = 1;
-    snakeMaps[pos2.x + "," + pos2.y] = 1;
-    snakeMaps[pos3.x + "," + pos3.y] = 1;
+    snakeMaps[this.posHash(pos1)] = 1;
+    snakeMaps[this.posHash(pos2)] = 1;
+    snakeMaps[this.posHash(pos3)] = 1;
 
     snakeArray.push(pos1);
     snakeArray.push(pos2);
@@ -83,10 +87,10 @@ class App extends Component {
     posnew.x = pos.x;
     posnew.y=pos.y+1;
     snakeArray.push(posnew);
-    snakeMaps[posnew.x + "," + posnew.y] = 1;
+    snakeMaps[this.posHash(posnew)] = 1;
 
     let posd = snakeArray.shift();
-    delete snakeMaps[posd.x + "," + posd.y];
+    delete snakeMaps[this.posHash(posd)];
 
     this.setState({ state: this.state });
   }
