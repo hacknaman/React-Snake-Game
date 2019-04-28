@@ -79,18 +79,20 @@ class App extends Component {
     // snakePositions.splice(-1);
 
     let pos = snakeArray[snakeArray.length-1];
-    pos.y=pos.y+1;
-    snakeArray.push(pos);
-    snakeMaps[pos.x + "," + pos.y] = 1;
+    let posnew = {};
+    posnew.x = pos.x;
+    posnew.y=pos.y+1;
+    snakeArray.push(posnew);
+    snakeMaps[posnew.x + "," + posnew.y] = 1;
 
     let posd = snakeArray.shift();
-    delete snakeMaps[posd];
+    delete snakeMaps[posd.x + "," + posd.y];
 
     this.setState({ state: this.state });
   }
 
   StartGame() {
-    this.moveSnakeInterval = setInterval(this.updateSnake, 2000);
+    this.moveSnakeInterval = setInterval(this.updateSnake, 1000);
   }
 
   render() {
