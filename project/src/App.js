@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './App.scss';
 
-var snakePositions = {}; 
+var snakeArray = []; 
+var snakeMaps = {}; 
 
 var snakeCell = {};
 snakeCell.x = 10;
@@ -13,7 +14,7 @@ function GridCell(props) {
 
   let cellStyle = `grid-cell`;
 
-  if( snakePositions[ props.gridx + " " + props.gridy]) 
+  if( snakeMaps[ props.gridx + "," + props.gridy]) 
   {
     cellStyle = `grid-snake`;
   }
@@ -33,6 +34,8 @@ class App extends Component {
   constructor(props) {
 
     super(props);
+    this.InitSnake();
+    this.StartGame();
 
     this.state = {
       snake: [],
@@ -44,9 +47,26 @@ class App extends Component {
   }
 
   InitSnake() {
-    snakePositions[10 + " " + 20] = 1;
-    snakePositions[10 + " " + 21] = 1;
-    snakePositions[10 + " " + 22] = 1;
+
+    let pos1 = {};
+    pos1.x = 10;
+    pos1.y = 20;
+
+    let pos2 = {};
+    pos2.x = 10;
+    pos2.y = 21;
+
+    let pos3 = {};
+    pos3.x = 10;
+    pos3.y = 22;
+
+    snakeMaps[pos1.x + "," + pos1.y] = 1;
+    snakeMaps[pos2.x + "," + pos2.y] = 1;
+    snakeMaps[pos3.x + "," + pos3.y] = 1;
+
+    snakeArray.push(pos1);
+    snakeArray.push(pos2);
+    snakeArray.push(pos3);
   }
 
   KeyDown(KeyEvent) {
@@ -54,20 +74,28 @@ class App extends Component {
     console.log("Key Pressed " + KeyEvent.keyCode) ;
   }
 
-  updateSnake() {
-    //snakePositions.shift(); 
-    snakePositions.splice(-1);
-    //this.setState({ state: this.state });
+  updateSnake = () => {
+    // snakePositions.shift(); 
+    // snakePositions.splice(-1);
+
+    let pos = snakeArray[snakeArray.length-1];
+    pos.y=pos.y+1;
+    snakeArray.push(pos);
+    snakeMaps[pos.x + "," + pos.y] = 1;
+
+    let posd = snakeArray.shift();
+    delete snakeMaps[posd];
+
+    this.setState({ state: this.state });
   }
 
   StartGame() {
-    this.moveSnakeInterval = setInterval(this.updateSnake, 100);
+    this.moveSnakeInterval = setInterval(this.updateSnake, 2000);
   }
 
   render() {
 
-    this.InitSnake();
-    this.StartGame();
+    
 
     this.numCells = Math.floor(this.props.size / 15);
     const cellSize = this.props.size / this.numCells;
