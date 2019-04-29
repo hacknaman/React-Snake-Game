@@ -36,6 +36,7 @@ class App extends Component {
     super(props);
     this.InitSnake();
     this.StartGame();
+    this.keyPressed = 40;
 
     this.state = {
       snake: [],
@@ -73,8 +74,9 @@ class App extends Component {
     snakeArray.push(pos3);
   }
 
-  KeyDown(KeyEvent) {
-    // 37 left, 38 up, 39 right, 40
+  KeyDown = (KeyEvent) => {
+    // 37 left, 38 up, 39 right, 40 down
+    this.keyPressed = KeyEvent.keyCode;
     console.log("Key Pressed " + KeyEvent.keyCode) ;
   }
 
@@ -85,7 +87,19 @@ class App extends Component {
     let pos = snakeArray[snakeArray.length-1];
     let posnew = {};
     posnew.x = pos.x;
-    posnew.y=pos.y+1;
+    posnew.y = pos.y;
+
+    // 37 left, 38 up, 39 right, 40 down
+    if ( this.keyPressed === 37) {
+      posnew.x=pos.x-1;
+    } else if (this.keyPressed === 39) {
+      posnew.x=pos.x+1;
+    } else if (this.keyPressed === 38) {
+      posnew.y=pos.y-1;
+    } else if (this.keyPressed === 40) {
+      posnew.y=pos.y+1;
+    }
+
     snakeArray.push(posnew);
     snakeMaps[this.posHash(posnew)] = 1;
 
@@ -100,8 +114,6 @@ class App extends Component {
   }
 
   render() {
-
-    
 
     this.numCells = Math.floor(this.props.size / 15);
     const cellSize = this.props.size / this.numCells;
