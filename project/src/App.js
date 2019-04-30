@@ -8,6 +8,9 @@ var snakeCell = {};
 snakeCell.x = 10;
 snakeCell.y = 20;
 
+var moveDirection = 40;
+
+var numCells = 30;
 
 // display a single cell
 function GridCell(props) {
@@ -29,6 +32,8 @@ function GridCell(props) {
   );
 }
 
+
+
 class App extends Component {
 
   constructor(props) {
@@ -36,7 +41,6 @@ class App extends Component {
     super(props);
     this.InitSnake();
     this.StartGame();
-    this.keyPressed = 40;
 
     this.state = {
       snake: [],
@@ -74,9 +78,11 @@ class App extends Component {
     snakeArray.push(pos3);
   }
 
-  KeyDown = (KeyEvent) => {
+  KeyDownn = (KeyEvent) => {
     // 37 left, 38 up, 39 right, 40 down
-    this.keyPressed = KeyEvent.keyCode;
+    if ( KeyEvent.keyCode === 37 || KeyEvent.keyCode === 39 || KeyEvent.keyCode === 38 || KeyEvent.keyCode === 40) {
+      moveDirection = KeyEvent.keyCode;
+    }
     console.log("Key Pressed " + KeyEvent.keyCode) ;
   }
 
@@ -90,15 +96,27 @@ class App extends Component {
     posnew.y = pos.y;
 
     // 37 left, 38 up, 39 right, 40 down
-    if ( this.keyPressed === 37) {
+    if ( moveDirection === 37) {
       posnew.x=pos.x-1;
-    } else if (this.keyPressed === 39) {
+    } else if (moveDirection === 39) {
       posnew.x=pos.x+1;
-    } else if (this.keyPressed === 38) {
+    } else if (moveDirection === 38) {
       posnew.y=pos.y-1;
-    } else if (this.keyPressed === 40) {
+    } else if (moveDirection === 40) {
       posnew.y=pos.y+1;
     }
+
+    if (posnew.x < 0) {
+      posnew.x=numCells;
+    } else if (posnew.x > numCells) {
+      posnew.x = 0;
+    } 
+
+    if (posnew.y < 0) {
+      posnew.y=numCells;
+    } else if (posnew.y > numCells) {
+      posnew.y=0;
+    } 
 
     snakeArray.push(posnew);
     snakeMaps[this.posHash(posnew)] = 1;
@@ -110,12 +128,13 @@ class App extends Component {
   }
 
   StartGame() {
-    this.moveSnakeInterval = setInterval(this.updateSnake, 1000);
+    this.moveSnakeInterval = setInterval(this.updateSnake, 100);
   }
 
   render() {
 
     this.numCells = Math.floor(this.props.size / 15);
+    numCells = this.numCells;
     const cellSize = this.props.size / this.numCells;
     const cellIndexes = Array.from(Array(this.numCells).keys());
     const cells = cellIndexes.map(y => {
@@ -131,7 +150,7 @@ class App extends Component {
     return (
       <div
         className="snake-board"
-        onKeyDown={this.KeyDown}
+        onKeyDown={this.KeyDownn}
         style={{
           width: this.props.size + "px",
           height: this.props.size + "px"
