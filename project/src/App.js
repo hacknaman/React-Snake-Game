@@ -22,8 +22,6 @@ function GridCell(props) {
     cellStyle = `grid-snake`;
   }
 
-  console.log(props.gridx + " " + props.gridy);
-
   return (
     <div
       className={cellStyle}
@@ -157,6 +155,11 @@ class App extends Component {
     } else if (posnew.y > numCells) {
       posnew.y=0;
     } 
+
+    if( snakeMaps[ posnew.x  + "," + posnew.y]) 
+    {
+      console.log("Game Over!!!");
+    }
 
     snakeArray.push(posnew);
     snakeMaps[this.posHash(posnew)] = 1;
