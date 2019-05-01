@@ -69,17 +69,57 @@ class App extends Component {
     pos3.x = 10;
     pos3.y = 22;
 
+    let pos4 = {};
+    pos4.x = 10;
+    pos4.y = 23;
+
+    let pos5 = {};
+    pos5.x = 10;
+    pos5.y = 24;
+
+    let pos6 = {};
+    pos6.x = 10;
+    pos6.y = 25;
+
+    let pos7 = {};
+    pos7.x = 10;
+    pos7.y = 26;
+
     snakeMaps[this.posHash(pos1)] = 1;
     snakeMaps[this.posHash(pos2)] = 1;
     snakeMaps[this.posHash(pos3)] = 1;
+    snakeMaps[this.posHash(pos4)] = 1;
+    snakeMaps[this.posHash(pos5)] = 1;
+    snakeMaps[this.posHash(pos6)] = 1;
+    snakeMaps[this.posHash(pos7)] = 1;
 
     snakeArray.push(pos1);
     snakeArray.push(pos2);
     snakeArray.push(pos3);
+    snakeArray.push(pos4);
+    snakeArray.push(pos5);
+    snakeArray.push(pos6);
+    snakeArray.push(pos7);
   }
 
   KeyDownn = (KeyEvent) => {
     // 37 left, 38 up, 39 right, 40 down
+    if(moveDirection === 40 && KeyEvent.keyCode === 38) {
+      return;
+    }
+
+    if(moveDirection === 38 && KeyEvent.keyCode === 40) {
+      return;
+    }
+
+    if(moveDirection === 37 && KeyEvent.keyCode === 39) {
+      return;
+    }
+
+    if(moveDirection === 39 && KeyEvent.keyCode === 37) {
+      return;
+    }
+
     if ( KeyEvent.keyCode === 37 || KeyEvent.keyCode === 39 || KeyEvent.keyCode === 38 || KeyEvent.keyCode === 40) {
       moveDirection = KeyEvent.keyCode;
     }
