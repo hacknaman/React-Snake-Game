@@ -121,7 +121,6 @@ class App extends Component {
     if ( KeyEvent.keyCode === 37 || KeyEvent.keyCode === 39 || KeyEvent.keyCode === 38 || KeyEvent.keyCode === 40) {
       moveDirection = KeyEvent.keyCode;
     }
-    console.log("Key Pressed " + KeyEvent.keyCode) ;
   }
 
   updateSnake = () => {
@@ -146,13 +145,13 @@ class App extends Component {
 
     if (posnew.x < 0) {
       posnew.x=numCells;
-    } else if (posnew.x > numCells) {
+    } else if (posnew.x > numCells-1) {
       posnew.x = 0;
     } 
 
     if (posnew.y < 0) {
       posnew.y=numCells;
-    } else if (posnew.y > numCells) {
+    } else if (posnew.y > numCells-1) {
       posnew.y=0;
     } 
 
