@@ -4,9 +4,8 @@ import './App.scss';
 var snakeArray = []; 
 var snakeMaps = {}; 
 
-var snakeCell = {};
-snakeCell.x = 10;
-snakeCell.y = 20;
+var fruitArray = []; 
+var fruitMaps = {}; 
 
 var moveDirection = 40;
 
@@ -22,6 +21,11 @@ function GridCell(props) {
     cellStyle = `grid-snake`;
   }
 
+  if( fruitMaps[ props.gridx + "," + props.gridy]) 
+  {
+    cellStyle = `grid-fruit`;
+  }
+
   return (
     <div
       className={cellStyle}
@@ -29,8 +33,6 @@ function GridCell(props) {
       />
   );
 }
-
-
 
 class App extends Component {
 
@@ -98,6 +100,15 @@ class App extends Component {
     snakeArray.push(pos5);
     snakeArray.push(pos6);
     snakeArray.push(pos7);
+
+
+    let pos10 = {};
+    pos10.x = 25;
+    pos10.y = 36;
+
+    fruitMaps[this.posHash(pos10)] = 1;
+    fruitArray.push(pos10);
+
   }
 
   KeyDownn = (KeyEvent) => {
@@ -121,6 +132,18 @@ class App extends Component {
     if ( KeyEvent.keyCode === 37 || KeyEvent.keyCode === 39 || KeyEvent.keyCode === 38 || KeyEvent.keyCode === 40) {
       moveDirection = KeyEvent.keyCode;
     }
+  }
+
+  makeNewFruit = () => {
+
+    let min=0; 
+    let max=this.numCells-1;  
+    let pos10 = {};
+    pos10.x = Math.floor(Math.random() * (+max - +min)) + +min; 
+    pos10.y = Math.floor(Math.random() * (+max - +min)) + +min; 
+
+    fruitMaps[this.posHash(pos10)] = 1;
+    fruitArray.push(pos10);
   }
 
   updateSnake = () => {
@@ -155,9 +178,16 @@ class App extends Component {
       posnew.y=0;
     } 
 
-    if( snakeMaps[ posnew.x  + "," + posnew.y]) 
+    if( snakeMaps[this.posHash(posnew)]) 
     {
       console.log("Game Over!!!");
+    }
+
+    if(fruitMaps[this.posHash(posnew)]) {
+      
+      let posd = fruitArray.shift();
+      delete fruitMaps[this.posHash(posd)];
+      this.makeNewFruit();
     }
 
     snakeArray.push(posnew);
@@ -179,14 +209,13 @@ class App extends Component {
     numCells = this.numCells;
     const cellSize = this.props.size / this.numCells;
     const cellIndexes = Array.from(Array(this.numCells).keys());
-    const cells = cellIndexes.map(y => {
 
+    const cells = cellIndexes.map(y => {
       return cellIndexes.map(x => {
         return (
           <GridCell size={cellSize} gridx={x} gridy={y} />
         );
       });
-
     });
 
     return (
