@@ -3,13 +3,25 @@ import './App.scss';
 
 var snakeArray = []; 
 var snakeMaps = {}; 
-
 var fruitArray = []; 
 var fruitMaps = {}; 
 
 var moveDirection = 40;
-
 var numCells = 30;
+
+
+// 37 left, 38 up, 39 right, 40 down
+const DIR_UP = 38;
+const DIR_DOWN = 40;
+const DIR_LEFT = 37;
+const DIR_RIGHT = 39;
+
+const functionMap = {
+  37: (value,value2) => {value2.x=value.x-1;},
+  39: (value,value2) => {value2.x=value.x+1;},
+  38: (value,value2) => {value2.y=value.y-1;},
+  40: (value,value2) => {value2.y=value.y+1;}
+}
 
 // display a single cell
 function GridCell(props) {
@@ -37,143 +49,79 @@ function GridCell(props) {
 class App extends Component {
 
   constructor(props) {
-
     super(props);
     this.InitSnake();
     this.StartGame();
-
-    this.state = {
-      snake: [],
-      food: [],
-      status: 0,
-      direction: 39
-    };
-
+    this.state = { };
   }
 
   posHash(pos) {
     return pos.x + "," + pos.y
   }
 
+  ResetSnake() {
+    snakeMaps = {};
+    snakeArray = [];
+    let SnakeLength = 5;
+    moveDirection = DIR_DOWN;
+    for( let i = 0; i<=SnakeLength; ++i )
+    {
+      let pos = {};
+      pos.x = 10;
+      pos.y = 20 + i;
+      snakeMaps[this.posHash(pos)] = 1;
+      snakeArray.push(pos);
+    }
+
+  }
+
   InitSnake() {
-
-    let pos1 = {};
-    pos1.x = 10;
-    pos1.y = 20;
-
-    let pos2 = {};
-    pos2.x = 10;
-    pos2.y = 21;
-
-    let pos3 = {};
-    pos3.x = 10;
-    pos3.y = 22;
-
-    let pos4 = {};
-    pos4.x = 10;
-    pos4.y = 23;
-
-    let pos5 = {};
-    pos5.x = 10;
-    pos5.y = 24;
-
-    let pos6 = {};
-    pos6.x = 10;
-    pos6.y = 25;
-
-    let pos7 = {};
-    pos7.x = 10;
-    pos7.y = 26;
-
-    snakeMaps[this.posHash(pos1)] = 1;
-    snakeMaps[this.posHash(pos2)] = 1;
-    snakeMaps[this.posHash(pos3)] = 1;
-    snakeMaps[this.posHash(pos4)] = 1;
-    snakeMaps[this.posHash(pos5)] = 1;
-    snakeMaps[this.posHash(pos6)] = 1;
-    snakeMaps[this.posHash(pos7)] = 1;
-
-    snakeArray.push(pos1);
-    snakeArray.push(pos2);
-    snakeArray.push(pos3);
-    snakeArray.push(pos4);
-    snakeArray.push(pos5);
-    snakeArray.push(pos6);
-    snakeArray.push(pos7);
-
-
-    let pos10 = {};
-    pos10.x = 25;
-    pos10.y = 36;
-
-    fruitMaps[this.posHash(pos10)] = 1;
-    fruitArray.push(pos10);
-
+    this.ResetSnake();
+    this.makeNewFruit(10);
   }
 
   KeyDownn = (KeyEvent) => {
     // 37 left, 38 up, 39 right, 40 down
     // This is to avoid going into right opposite direction 
     // the snake is going.
-    if(moveDirection === 40 && KeyEvent.keyCode === 38) {
+    if( Math.abs(moveDirection - KeyEvent.keyCode) === 2) {
       return;
     }
 
-    if(moveDirection === 38 && KeyEvent.keyCode === 40) {
-      return;
-    }
-
-    if(moveDirection === 37 && KeyEvent.keyCode === 39) {
-      return;
-    }
-
-    if(moveDirection === 39 && KeyEvent.keyCode === 37) {
-      return;
-    }
-
-    if ( KeyEvent.keyCode === 37 || KeyEvent.keyCode === 39 || KeyEvent.keyCode === 38 || KeyEvent.keyCode === 40) {
+    if ( KeyEvent.keyCode === DIR_RIGHT || KeyEvent.keyCode === DIR_LEFT || KeyEvent.keyCode === DIR_UP || KeyEvent.keyCode === DIR_DOWN) {
       moveDirection = KeyEvent.keyCode;
     }
   }
 
-  makeNewFruit = () => {
-
+  makeNewFruit = (x) => {
     let min=0; 
-    let max=this.numCells-1;  
-    let pos10 = {};
-    pos10.x = Math.floor(Math.random() * (+max - +min)) + +min; 
-    pos10.y = Math.floor(Math.random() * (+max - +min)) + +min; 
-
-    fruitMaps[this.posHash(pos10)] = 1;
-    fruitArray.push(pos10);
+    let max=x-1;  
+    let pos = {};
+    pos.x = Math.floor(Math.random() * (+max - +min)) + +min; 
+    pos.y = Math.floor(Math.random() * (+max - +min)) + +min; 
+    fruitMaps[this.posHash(pos)] = 1;
+    fruitArray.push(pos);
   }
 
   updateSnake = () => {
-    // snakePositions.shift(); 
-    // snakePositions.splice(-1);
 
     let pos = snakeArray[snakeArray.length-1];
     let posnew = {};
     posnew.x = pos.x;
     posnew.y = pos.y;
 
-    // 37 left, 38 up, 39 right, 40 down
-    if ( moveDirection === 37) {
-      posnew.x=pos.x-1;
-    } else if (moveDirection === 39) {
-      posnew.x=pos.x+1;
-    } else if (moveDirection === 38) {
-      posnew.y=pos.y-1;
-    } else if (moveDirection === 40) {
-      posnew.y=pos.y+1;
-    }
+    functionMap[moveDirection](pos,posnew);
 
+    // snake collide with walls
+    // posnew.x = Math.min(Math.max(0,posnew.x),numCells);
+    // posnew.y = Math.min(Math.max(0,posnew.y),numCells);
+
+    // snake pass through walls
     if (posnew.x < 0) {
       posnew.x=numCells;
     } else if (posnew.x > numCells-1) {
       posnew.x = 0;
     } 
-
     if (posnew.y < 0) {
       posnew.y=numCells;
     } else if (posnew.y > numCells-1) {
@@ -182,12 +130,15 @@ class App extends Component {
 
     if( snakeMaps[this.posHash(posnew)]) {
       console.log("Game Over!!!");
+      this.ResetSnake();
+      this.setState({ state: this.state });
+      return;
     }
 
     if(fruitMaps[this.posHash(posnew)]) {
       let posd = fruitArray.shift();
       delete fruitMaps[this.posHash(posd)];
-      this.makeNewFruit();
+      this.makeNewFruit(numCells);
       snakeArray.push(posnew);
     }
 
@@ -204,7 +155,7 @@ class App extends Component {
     this.moveSnakeInterval = setInterval(this.updateSnake, 100);
   }
 
-  render() {
+  render = () => {
 
     this.numCells = Math.floor(this.props.size / 15);
     numCells = this.numCells;
