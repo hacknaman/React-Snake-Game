@@ -113,6 +113,8 @@ class App extends Component {
 
   KeyDownn = (KeyEvent) => {
     // 37 left, 38 up, 39 right, 40 down
+    // This is to avoid going into right opposite direction 
+    // the snake is going.
     if(moveDirection === 40 && KeyEvent.keyCode === 38) {
       return;
     }
@@ -178,16 +180,15 @@ class App extends Component {
       posnew.y=0;
     } 
 
-    if( snakeMaps[this.posHash(posnew)]) 
-    {
+    if( snakeMaps[this.posHash(posnew)]) {
       console.log("Game Over!!!");
     }
 
     if(fruitMaps[this.posHash(posnew)]) {
-      
       let posd = fruitArray.shift();
       delete fruitMaps[this.posHash(posd)];
       this.makeNewFruit();
+      snakeArray.push(posnew);
     }
 
     snakeArray.push(posnew);
