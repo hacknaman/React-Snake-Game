@@ -4,19 +4,19 @@ self.__precacheManifest = [
     "url": "/React-Snake-Game/static/js/runtime~main.efa06e0f.js"
   },
   {
-    "revision": "80010bcebff7dc4af29a",
-    "url": "/React-Snake-Game/static/js/main.8fe4c29e.chunk.js"
+    "revision": "89c60285669d433aeffb",
+    "url": "/React-Snake-Game/static/js/main.3d975fa6.chunk.js"
   },
   {
     "revision": "681b51057d74cfa8975d",
     "url": "/React-Snake-Game/static/js/2.65aa1cca.chunk.js"
   },
   {
-    "revision": "80010bcebff7dc4af29a",
-    "url": "/React-Snake-Game/static/css/main.7dc9a24f.chunk.css"
+    "revision": "89c60285669d433aeffb",
+    "url": "/React-Snake-Game/static/css/main.f3631fa9.chunk.css"
   },
   {
-    "revision": "80b21672d2afdee24f307301b2bf57e4",
+    "revision": "c245ab72891cf989b992114e0ca27f96",
     "url": "/React-Snake-Game/index.html"
   }
 ];
