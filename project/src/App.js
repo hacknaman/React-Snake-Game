@@ -1,46 +1,39 @@
 import React, { Component } from 'react';
 import './App.scss';
 
-var snakeArray = []; 
-var snakeMaps = {}; 
-var fruitArray = []; 
-var fruitMaps = {}; 
-
-var moveDirection = 40;
-var numCells = 30;
-
-
 // 37 left, 38 up, 39 right, 40 down
 const DIR_UP = 38;
 const DIR_DOWN = 40;
 const DIR_LEFT = 37;
 const DIR_RIGHT = 39;
 
-const functionMap = {
+const MoveFunctionMap = {
   37: (value,value2) => {value2.x=value.x-1;},
   39: (value,value2) => {value2.x=value.x+1;},
   38: (value,value2) => {value2.y=value.y-1;},
   40: (value,value2) => {value2.y=value.y+1;}
 }
 
+const INIT_SNAKE_LEN = 5;
+
 // display a single cell
 function GridCell(props) {
 
-  let cellStyle = `grid-cell`;
+  let CellStyle = `grid-cell`;
 
-  if( snakeMaps[ props.gridx + "," + props.gridy]) 
+  if( props.snakeMaps[ props.gridx + "," + props.gridy]) 
   {
-    cellStyle = `grid-snake`;
+    CellStyle = `grid-snake`;
   }
 
-  if( fruitMaps[ props.gridx + "," + props.gridy]) 
+  if( props.fruitMaps[ props.gridx + "," + props.gridy]) 
   {
-    cellStyle = `grid-fruit`;
+    CellStyle = `grid-fruit`;
   }
 
   return (
     <div
-      className={cellStyle}
+      className={CellStyle}
       style={{ height: props.size + "px", width: props.size + "px" }}
       />
   );
@@ -48,48 +41,53 @@ function GridCell(props) {
 
 class App extends Component {
 
-  constructor(props) {
+  constructor (props) {
     super(props);
+    this.SnakeArray = []; 
+    this.SnakeMaps = {}; 
+    this.FruitArray = []; 
+    this.FruitMaps = {}; 
+    this.MoveDirection = DIR_DOWN;
+    this.NumCells = Math.floor(this.props.size / 15);
+
     this.InitSnake();
     this.StartGame();
     this.state = { };
   }
 
-  posHash(pos) {
-    return pos.x + "," + pos.y
+  PosHash = (pos) => {
+    return pos.x + "," + pos.y;
   }
 
-  ResetSnake() {
-    snakeMaps = {};
-    snakeArray = [];
-    let SnakeLength = 5;
-    moveDirection = DIR_DOWN;
-    for( let i = 0; i<=SnakeLength; ++i )
+  ResetSnake = () => {
+    this.SnakeMaps = {};
+    this.SnakeArray = [];
+    this.MoveDirection = DIR_DOWN;
+    for( let i = 0; i<=INIT_SNAKE_LEN; ++i )
     {
       let pos = {};
-      pos.x = 10;
-      pos.y = 20 + i;
-      snakeMaps[this.posHash(pos)] = 1;
-      snakeArray.push(pos);
+      pos.x = this.NumCells/2;
+      pos.y = this.NumCells/2 + i;
+      this.SnakeMaps[this.PosHash(pos)] = 1;
+      this.SnakeArray.push(pos);
     }
-
   }
 
-  InitSnake() {
+  InitSnake = () => {
     this.ResetSnake();
     this.makeNewFruit(10);
   }
 
-  KeyDownn = (KeyEvent) => {
+  KeyDowned = (KeyEvent) => {
     // 37 left, 38 up, 39 right, 40 down
     // This is to avoid going into right opposite direction 
     // the snake is going.
-    if( Math.abs(moveDirection - KeyEvent.keyCode) === 2) {
+    if( Math.abs(this.MoveDirection - KeyEvent.keyCode) === 2) {
       return;
     }
 
     if ( KeyEvent.keyCode === DIR_RIGHT || KeyEvent.keyCode === DIR_LEFT || KeyEvent.keyCode === DIR_UP || KeyEvent.keyCode === DIR_DOWN) {
-      moveDirection = KeyEvent.keyCode;
+      this.MoveDirection = KeyEvent.keyCode;
     }
   }
 
@@ -99,54 +97,54 @@ class App extends Component {
     let pos = {};
     pos.x = Math.floor(Math.random() * (max - min)) + min; 
     pos.y = Math.floor(Math.random() * (max - min)) + min; 
-    fruitMaps[this.posHash(pos)] = 1;
-    fruitArray.push(pos);
+    this.FruitMaps[this.PosHash(pos)] = 1;
+    this.FruitArray.push(pos);
   }
 
   updateSnake = () => {
 
-    let pos = snakeArray[snakeArray.length-1];
+    let pos = this.SnakeArray[this.SnakeArray.length-1];
     let posnew = {};
     posnew.x = pos.x;
     posnew.y = pos.y;
 
-    functionMap[moveDirection](pos,posnew);
+    MoveFunctionMap[this.MoveDirection](pos,posnew);
 
     // snake collide with walls
-    // posnew.x = Math.min(Math.max(0,posnew.x),numCells);
-    // posnew.y = Math.min(Math.max(0,posnew.y),numCells);
+    // posnew.x = Math.min(Math.max(0,posnew.x),this.NumCells);
+    // posnew.y = Math.min(Math.max(0,posnew.y),this.NumCells);
 
     // snake pass through walls
     if (posnew.x < 0) {
-      posnew.x=numCells;
-    } else if (posnew.x > numCells-1) {
+      posnew.x=this.NumCells;
+    } else if (posnew.x > this.NumCells-1) {
       posnew.x = 0;
     } 
     if (posnew.y < 0) {
-      posnew.y=numCells;
-    } else if (posnew.y > numCells-1) {
+      posnew.y=this.NumCells;
+    } else if (posnew.y > this.NumCells-1) {
       posnew.y=0;
     } 
 
-    if( snakeMaps[this.posHash(posnew)]) {
+    if(this.SnakeMaps[this.PosHash(posnew)]) {
       console.log("Game Over!!!");
       this.ResetSnake();
       this.setState({ state: this.state });
       return;
     }
 
-    if(fruitMaps[this.posHash(posnew)]) {
-      let posd = fruitArray.shift();
-      delete fruitMaps[this.posHash(posd)];
-      this.makeNewFruit(numCells);
-      snakeArray.push(posnew);
+    if(this.FruitMaps[this.PosHash(posnew)]) {
+      let posd = this.FruitArray.shift();
+      delete this.FruitMaps[this.PosHash(posd)];
+      this.makeNewFruit(this.NumCells);
+      this.SnakeArray.push(posnew);
     }
 
-    snakeArray.push(posnew);
-    snakeMaps[this.posHash(posnew)] = 1;
+    this.SnakeArray.push(posnew);
+    this.SnakeMaps[this.PosHash(posnew)] = 1;
 
-    let posd = snakeArray.shift();
-    delete snakeMaps[this.posHash(posd)];
+    let posd = this.SnakeArray.shift();
+    delete this.SnakeMaps[this.PosHash(posd)];
 
     this.setState({ state: this.state });
   }
@@ -157,15 +155,12 @@ class App extends Component {
 
   render = () => {
 
-    this.numCells = Math.floor(this.props.size / 15);
-    numCells = this.numCells;
-    const cellSize = this.props.size / this.numCells;
-    const cellIndexes = Array.from(Array(this.numCells).keys());
-
+    const cellSize = this.props.size / this.NumCells;
+    const cellIndexes = Array.from(Array(this.NumCells).keys());
     const cells = cellIndexes.map(y => {
       return cellIndexes.map(x => {
         return (
-          <GridCell size={cellSize} gridx={x} gridy={y} />
+          <GridCell size={cellSize} gridx={x} gridy={y} snakeMaps={this.SnakeMaps} fruitMaps={this.FruitMaps}/>
         );
       });
     });
@@ -173,7 +168,7 @@ class App extends Component {
     return (
       <div
         className="snake-board"
-        onKeyDown={this.KeyDownn}
+        onKeyDown={this.KeyDowned}
         style={{
           width: this.props.size + "px",
           height: this.props.size + "px"
