@@ -35,7 +35,7 @@ function GridCell(props) {
     <div
       className={CellStyle}
       style={{ height: props.size + "px", width: props.size + "px" }}
-      />
+    />
   );
 }
 
