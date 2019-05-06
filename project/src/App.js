@@ -97,8 +97,8 @@ class App extends Component {
     let min=0; 
     let max=x-1;  
     let pos = {};
-    pos.x = Math.floor(Math.random() * (+max - +min)) + +min; 
-    pos.y = Math.floor(Math.random() * (+max - +min)) + +min; 
+    pos.x = Math.floor(Math.random() * (max - min)) + min; 
+    pos.y = Math.floor(Math.random() * (max - min)) + min; 
     fruitMaps[this.posHash(pos)] = 1;
     fruitArray.push(pos);
   }
