@@ -47,7 +47,7 @@ class App extends Component {
     this.FruitArray = []; 
     this.FruitMaps = {}; 
     this.MoveDirection = DIR_DOWN;
-    this.NumCells = Math.floor(this.props.size / 15);
+    this.NumCells = Math.floor(this.props.size / 30);
     this.Score = 0;
 
     this.InitSnake();
