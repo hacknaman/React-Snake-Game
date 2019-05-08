@@ -158,6 +158,7 @@ class App extends Component {
   }
 
   render = () => {
+    // This has to be optimized
     const Cells = this.CellIndexes.map(y => {
       return this.CellIndexes.map(x => {
         return (
