@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import './App.scss';
 
-// 37 left, 38 up, 39 right, 40 down
 const DIR_UP = 38;
 const DIR_DOWN = 40;
 const DIR_LEFT = 37;
 const DIR_RIGHT = 39;
 
 const MoveFunctionMap = {
-  37: (value,value2) => {value2.x=value.x-1;},
-  39: (value,value2) => {value2.x=value.x+1;},
-  38: (value,value2) => {value2.y=value.y-1;},
-  40: (value,value2) => {value2.y=value.y+1;}
+  37: (InVal,OutVal) => {OutVal.x=InVal.x-1;},
+  39: (InVal,OutVal) => {OutVal.x=InVal.x+1;},
+  38: (InVal,OutVal) => {OutVal.y=InVal.y-1;},
+  40: (InVal,OutVal) => {OutVal.y=InVal.y+1;}
 }
 
 const INIT_SNAKE_LEN = 5;
@@ -49,10 +48,14 @@ class App extends Component {
     this.FruitMaps = {}; 
     this.MoveDirection = DIR_DOWN;
     this.NumCells = Math.floor(this.props.size / 15);
+    this.Score = 0;
 
     this.InitSnake();
     this.StartGame();
     this.state = { };
+
+    this.CellSize = this.props.size / this.NumCells;
+    this.CellIndexes = Array.from(Array(this.NumCells).keys());
   }
 
   PosHash = (pos) => {
@@ -63,6 +66,7 @@ class App extends Component {
     this.SnakeMaps = {};
     this.SnakeArray = [];
     this.MoveDirection = DIR_DOWN;
+    this.Score = 0;
     for( let i = 0; i<=INIT_SNAKE_LEN; ++i )
     {
       let pos = {};
@@ -79,7 +83,6 @@ class App extends Component {
   }
 
   KeyDowned = (KeyEvent) => {
-    // 37 left, 38 up, 39 right, 40 down
     // This is to avoid going into right opposite direction 
     // the snake is going.
     if( Math.abs(this.MoveDirection - KeyEvent.keyCode) === 2) {
@@ -138,6 +141,7 @@ class App extends Component {
       delete this.FruitMaps[this.PosHash(posd)];
       this.makeNewFruit(this.NumCells);
       this.SnakeArray.push(posnew);
+      this.Score+=10;
     }
 
     this.SnakeArray.push(posnew);
@@ -154,13 +158,10 @@ class App extends Component {
   }
 
   render = () => {
-
-    const cellSize = this.props.size / this.NumCells;
-    const cellIndexes = Array.from(Array(this.NumCells).keys());
-    const cells = cellIndexes.map(y => {
-      return cellIndexes.map(x => {
+    const Cells = this.CellIndexes.map(y => {
+      return this.CellIndexes.map(x => {
         return (
-          <GridCell size={cellSize} gridx={x} gridy={y} snakeMaps={this.SnakeMaps} fruitMaps={this.FruitMaps}/>
+          <GridCell size={this.CellSize} gridx={x} gridy={y} snakeMaps={this.SnakeMaps} fruitMaps={this.FruitMaps}/>
         );
       });
     });
@@ -171,7 +172,7 @@ class App extends Component {
         onKeyDown={this.KeyDowned}
         style={{
           width: this.props.size + "px",
-          height: this.props.size + "px"
+          height: this.props.size + 10 + "px"
         }}
         ref={el => (this.el = el)}
         tabIndex={-1}
@@ -183,8 +184,9 @@ class App extends Component {
             height: this.props.size + "px"
           }}
           >
-          {cells}
+          {Cells}
         </div>
+        <div>Score: {this.Score}</div>
       </div>
     );
   }

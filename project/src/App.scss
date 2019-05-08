@@ -1,4 +1,4 @@
-* {
+*{
   box-sizing: border-box;
 }
 
@@ -19,15 +19,12 @@ html, body {
 }
 
 .grid-snake {
-  background-color: green;
+  background-color: blue;
 }
 
 .grid-fruit {
   border-radius: 50%;
   background-color: red;
-}
-
-.grid-cell {
 }
 
 .snake-board {
